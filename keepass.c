@@ -7,6 +7,7 @@
 #define GROUP_CLASS_NAME "Group"
 #define ENTRY_CLASS_NAME "Entry"
 
+static VALUE eException_KeepassException;
 static VALUE eException_unknown;
 static VALUE eException_kpass_decrypt_data_fail;
 static VALUE eException_kpass_decrypt_db_fail;
@@ -93,7 +94,8 @@ rb_kp_db_open(VALUE self, VALUE rb_file)
 }
 
 static void
-__define_exception(VALUE module, kpass_retval value, const char *value_as_str)
+__define_exception(VALUE module, kpass_retval value,
+    const char *value_as_str)
 {
     char *copy;
     char *copy_end;
@@ -110,7 +112,7 @@ __define_exception(VALUE module, kpass_retval value, const char *value_as_str)
         *p = toupper(*p); /* upper-case character following '_' */
         p  = strchr(copy, '_');
     }
-    rb_define_class_under(module, copy, rb_eException);
+    rb_define_class_under(module, copy, eException_KeepassException);
     free(copy);
 }
 
@@ -120,8 +122,11 @@ define_exception_classes(VALUE module)
 #define define_exception(value)\
     __define_exception(module, value, #value)
 
-    eException_unknown = rb_define_class_under(module, "UnknownException",
+    eException_KeepassException = rb_define_class_under(module, "Exception",
         rb_eException);
+
+    eException_unknown = rb_define_class_under(module, "UnknownException",
+        eException_KeepassException);
 
     define_exception(kpass_decrypt_data_fail);
     define_exception(kpass_decrypt_db_fail);
