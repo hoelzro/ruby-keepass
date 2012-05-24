@@ -14,6 +14,17 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
         end
     end
 
+    def assert_exception ex_type
+        begin
+            yield
+            flunk 'No exception was seen'
+        rescue ex_type => e
+            pass
+        rescue Exception => e
+            flunk "Unexpected exception: #{e}"
+        end
+    end
+
     def setup
         @kdb = Keepass::Database.new
     end
