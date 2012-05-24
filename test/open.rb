@@ -1,7 +1,8 @@
 require 'minitest/autorun'
 require 'keepass'
 
-KP_FILE = 'test/example.kdb'
+KP_FILE          = 'test/example.kdb'
+CORRECT_PASSWORD = 'abc123'
 
 class TestKeepass_Open < MiniTest::Unit::TestCase
     def assert_no_exception
@@ -17,7 +18,7 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
         kdb = Keepass::Database.new
 
         assert_no_exception do
-            kdb.open(KP_FILE)
+            kdb.open(KP_FILE, CORRECT_PASSWORD)
         end
     end
 
@@ -26,7 +27,7 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
         f   = File.open(KP_FILE, 'rb')
 
         assert_no_exception do
-            kdb.open(f)
+            kdb.open(f, CORRECT_PASSWORD)
         end
     end
 end
