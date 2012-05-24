@@ -1,8 +1,9 @@
 require 'minitest/autorun'
 require 'keepass'
 
-KP_FILE          = 'test/example.kdb'
-CORRECT_PASSWORD = 'abc123'
+KP_FILE            = 'test/example.kdb'
+CORRECT_PASSWORD   = 'abc123'
+INCORRECT_PASSWORD = '123abc'
 
 class TestKeepass_Open < MiniTest::Unit::TestCase
     def assert_no_exception
@@ -40,6 +41,20 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
 
         assert_no_exception do
             @kdb.open(f, CORRECT_PASSWORD)
+        end
+    end
+
+    def test_open_string_with_bad_password
+        assert_exception Keepass::DecryptDataFail do
+            @kdb.open(KP_FILE, INCORRECT_PASSWORD)
+        end
+    end
+
+    def test_open_file_with_bad_password
+        f = File.open(KP_FILE, 'rb')
+
+        assert_exception Keepass::DecryptDataFail do
+            @kdb.open(f, INCORRECT_PASSWORD)
         end
     end
 end
