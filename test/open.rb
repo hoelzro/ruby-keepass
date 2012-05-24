@@ -14,20 +14,21 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
         end
     end
 
-    def test_open_string_ok
-        kdb = Keepass::Database.new
+    def setup
+        @kdb = Keepass::Database.new
+    end
 
+    def test_open_string_ok
         assert_no_exception do
-            kdb.open(KP_FILE, CORRECT_PASSWORD)
+            @kdb.open(KP_FILE, CORRECT_PASSWORD)
         end
     end
 
     def test_open_file_ok
-        kdb = Keepass::Database.new
-        f   = File.open(KP_FILE, 'rb')
+        f = File.open(KP_FILE, 'rb')
 
         assert_no_exception do
-            kdb.open(f, CORRECT_PASSWORD)
+            @kdb.open(f, CORRECT_PASSWORD)
         end
     end
 end
