@@ -25,9 +25,9 @@ static VALUE eException_kpass_not_implemented;
 
 static void raise_kp_exception(kpass_retval result)
 {
-#define throw_exception(type, msg)\
+#define throw_exception(type)\
     case type:\
-        rb_raise(eException_##type, msg);\
+        rb_raise(eException_##type, kpass_error_str[type]);\
         break;
 
     /* it's ok, so don't do anything */
@@ -35,19 +35,19 @@ static void raise_kp_exception(kpass_retval result)
         return;
     }
     switch(result) {
-        throw_exception(kpass_decrypt_data_fail, "data decryption failure");
-	throw_exception(kpass_decrypt_db_fail, "database decryption failure");
-	throw_exception(kpass_hash_pw_fail, "password hash failure");
-	throw_exception(kpass_prepare_key_fail, "key preparation failure");
-	throw_exception(kpass_load_decrypted_data_entry_fail, "entry load failure");
-	throw_exception(kpass_load_decrypted_data_group_fail, "group load failure");
-	throw_exception(kpass_init_db_fail, "db init failure");
-	throw_exception(kpass_encrypt_db_fail, "encrypt db failure");
-	throw_exception(kpass_encrypt_data_fail, "encrypt data failure");
-	throw_exception(kpass_pack_db_fail, "pack db failure");
-	throw_exception(kpass_verification_fail, "verification failure");
-	throw_exception(kpass_unsupported_flag, "unsupported flag");
-	throw_exception(kpass_not_implemented, "unimplemented");
+        throw_exception(kpass_decrypt_data_fail);
+        throw_exception(kpass_decrypt_db_fail);
+        throw_exception(kpass_hash_pw_fail);
+        throw_exception(kpass_prepare_key_fail);
+        throw_exception(kpass_load_decrypted_data_entry_fail);
+        throw_exception(kpass_load_decrypted_data_group_fail);
+        throw_exception(kpass_init_db_fail);
+        throw_exception(kpass_encrypt_db_fail);
+        throw_exception(kpass_encrypt_data_fail);
+        throw_exception(kpass_pack_db_fail);
+        throw_exception(kpass_verification_fail);
+        throw_exception(kpass_unsupported_flag);
+        throw_exception(kpass_not_implemented);
 
         default:
             rb_raise(eException_unknown, "An unknown error occurred");
