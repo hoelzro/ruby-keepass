@@ -108,13 +108,14 @@ rb_kp_db_open(VALUE self, VALUE rb_file, VALUE rb_password)
     return Qnil;
 }
 
-static void
+static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
 {
     char *copy;
     char *copy_end;
     char *p;
+    VALUE klass;
 
     copy = strdup(value_as_str + strlen("kpass_")); /* copy and remove
                                                      * prefix */
@@ -127,15 +128,17 @@ __define_exception(VALUE module, kpass_retval value,
         *p = toupper(*p); /* upper-case character following '_' */
         p  = strchr(copy, '_');
     }
-    rb_define_class_under(module, copy, eException_KeepassException);
+    klass = rb_define_class_under(module, copy, eException_KeepassException);
     free(copy);
+
+    return klass;
 }
 
 static void
 define_exception_classes(VALUE module)
 {
 #define define_exception(value)\
-    __define_exception(module, value, #value)
+    eException_##value = __define_exception(module, value, #value)
 
     eException_KeepassException = rb_define_class_under(module, "Exception",
         rb_eException);
