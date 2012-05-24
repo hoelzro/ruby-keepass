@@ -56,7 +56,7 @@ static void raise_kp_exception(kpass_retval result)
 }
 
 VALUE
-rb_kp_db_open(VALUE self, VALUE rb_file)
+rb_kp_db_open(VALUE self, VALUE rb_file, VALUE rb_password)
 {
     ID id_read;
     VALUE bytes;
@@ -65,6 +65,7 @@ rb_kp_db_open(VALUE self, VALUE rb_file)
     kpass_db *kdb = NULL;
     VALUE kdb_object;
     kpass_retval result;
+    uint8_t hashed_pass[32];
 
     if(TYPE(rb_file) == T_STRING) {
         VALUE rb_filename = rb_file;
@@ -75,6 +76,8 @@ rb_kp_db_open(VALUE self, VALUE rb_file)
     }
 
     Check_Type(rb_file, T_FILE); /* XXX looser type check? */
+    Check_Type(rb_password, T_STRING);
+
     id_read  = rb_intern("read");
     bytes    = rb_funcall(rb_file, id_read, 0);
     c_length = RSTRING_LEN(bytes);
@@ -83,6 +86,18 @@ rb_kp_db_open(VALUE self, VALUE rb_file)
     kdb_object = Data_Make_Struct(rb_cObject, kpass_db, 0, kpass_free_db, kdb); 
 
     result = kpass_init_db(kdb, c_bytes, c_length);
+
+    if(result != kpass_success) {
+        raise_kp_exception(result);
+    }
+
+    result = kpass_hash_pw(kdb, RSTRING_PTR(rb_password), hashed_pass);
+
+    if(result != kpass_success) {
+        raise_kp_exception(result);
+    }
+
+    result = kpass_decrypt_db(kdb, hashed_pass);
 
     if(result != kpass_success) {
         raise_kp_exception(result);
@@ -163,5 +178,5 @@ Init_keepass(void)
     define_exception_classes(mKeepass);
 
     /* Database Methods */
-    rb_define_method(cDatabase, "open", rb_kp_db_open, 1);
+    rb_define_method(cDatabase, "open", rb_kp_db_open, 2);
 }
