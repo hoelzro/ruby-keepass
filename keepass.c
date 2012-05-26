@@ -7,6 +7,11 @@
 #define GROUP_CLASS_NAME "Group"
 #define ENTRY_CLASS_NAME "Entry"
 
+static VALUE mKeepass;
+static VALUE cDatabase;
+static VALUE cGroup;
+static VALUE cEntry;
+
 static VALUE eException_KeepassException;
 static VALUE eException_unknown;
 static VALUE eException_kpass_decrypt_data_fail;
@@ -166,11 +171,6 @@ define_exception_classes(VALUE module)
 void
 Init_keepass(void)
 {
-    VALUE mKeepass;
-    VALUE cDatabase;
-    VALUE cGroup;
-    VALUE cEntry;
-
     /* Module Initialization */
     mKeepass  = rb_define_module(MODULE_NAME);
     cDatabase = rb_define_class_under(mKeepass, DATABASE_CLASS_NAME,
