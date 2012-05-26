@@ -186,6 +186,42 @@ gen_reader(rb_kp_grp, ctime);
 gen_reader(rb_kp_grp, atime);
 gen_reader(rb_kp_grp, etime);
 
+VALUE
+rb_kp_grp_entries(VALUE self)
+{
+    VALUE kdb_object;
+    kpass_db *kdb;
+    VALUE entries;
+    uint32_t i;
+    uint32_t group_id;
+
+    kdb_object = rb_ivar_get(self, rb_intern("@kdb")); /* fetch the Keepass::Database */
+    kdb_object = rb_ivar_get(kdb_object, rb_intern("@kdb")); /* fetch the wrapper object */
+    Data_Get_Struct(kdb_object, kpass_db, kdb);
+
+    group_id = NUM2INT(rb_ivar_get(self, rb_intern("@id")));
+
+    entries = rb_ary_new();
+
+    for(i = 0; i < kdb->entries_len; i++) {
+        kpass_entry *entry = kdb->entries[i];
+        VALUE rb_entry;
+
+        if(entry->group_id != group_id) {
+            continue;
+        }
+
+        rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
+
+        rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
+        rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+
+        rb_ary_push(entries, rb_entry);
+    }
+
+    return entries;
+}
+
 static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
@@ -264,4 +300,5 @@ Init_keepass(void)
     rb_define_method(cGroup, "ctime", rb_kp_grp_ctime, 0);
     rb_define_method(cGroup, "atime", rb_kp_grp_atime, 0);
     rb_define_method(cGroup, "etime", rb_kp_grp_etime, 0);
+    rb_define_method(cGroup, "entries", rb_kp_grp_entries, 0);
 }
