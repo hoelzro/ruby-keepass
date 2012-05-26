@@ -177,6 +177,13 @@ rb_kp_grp_name(VALUE self)
     return rb_ivar_get(self, rb_intern("@name"));
 }
 
+#define gen_reader(prefix, attr_name)\
+VALUE \
+prefix##_##attr_name(VALUE self)\
+{\
+    return rb_ivar_get(self, rb_intern("@" #attr_name));\
+}
+
 static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
