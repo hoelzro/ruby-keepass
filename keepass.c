@@ -123,6 +123,31 @@ rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
     return rb_funcall(klass, id_new, 2, rb_file, rb_password);
 }
 
+VALUE
+rb_kp_db_groups(VALUE self)
+{
+    VALUE kdb_object;
+    kpass_db *kdb = NULL;
+    VALUE groups;
+    uint32_t i;
+
+    kdb_object = rb_ivar_get(self, rb_intern("@kdb"));
+    Data_Get_Struct(kdb_object, kpass_db, kdb);
+
+    groups = rb_ary_new2(kdb->groups_len);
+
+    for(i = 0; i < kdb->groups_len; i++) {
+        kpass_group *group = kdb->groups[i];
+        VALUE rb_group     = rb_funcall(cGroup, rb_intern("new"), 0);
+
+        rb_ivar_set(rb_group, rb_intern("@name"), rb_str_new_cstr(group->name));
+
+        rb_ary_push(groups, rb_group);
+    }
+
+    return groups;
+}
+
 static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
@@ -193,4 +218,5 @@ Init_keepass(void)
     /* Database Methods */
     rb_define_singleton_method(cDatabase, "open", rb_kp_db_open, 2);
     rb_define_method(cDatabase, "initialize", rb_kp_db_initialize, 2);
+    rb_define_method(cDatabase, "groups", rb_kp_db_groups, 0);
 }
