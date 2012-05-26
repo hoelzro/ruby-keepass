@@ -27,4 +27,28 @@ class TestKeepass_Groups < MiniTest::Unit::TestCase
 
         assert_equal times, [ Time ] * TIME_METHODS.length
     end
+
+    def test_entries
+        kdb     = Keepass::Database.open KP_FILE, CORRECT_PASSWORD
+        group   = kdb.groups[0]
+        entries = group.entries
+
+        seen_entries = []
+
+        entries.each do |entry|
+            seen_entries << {
+                :name     => entry.name,
+                :password => entry.password,
+            }
+        end
+
+        seen_entries.sort! do |a, b|
+            a[:name] <=> b[:name]
+        end
+
+        assert_equal seen_entries, [
+            { :name => 'Test1', :password => '12345' },
+            { :name => 'Test2', :password => 'abcde' },
+        ]
+    end
 end
