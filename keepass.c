@@ -148,6 +148,12 @@ rb_kp_db_groups(VALUE self)
     return groups;
 }
 
+VALUE
+rb_kp_grp_name(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@name"));
+}
+
 static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
@@ -219,4 +225,7 @@ Init_keepass(void)
     rb_define_singleton_method(cDatabase, "open", rb_kp_db_open, 2);
     rb_define_method(cDatabase, "initialize", rb_kp_db_initialize, 2);
     rb_define_method(cDatabase, "groups", rb_kp_db_groups, 0);
+
+    /* Group Methods */
+    rb_define_method(cGroup, "name", rb_kp_grp_name, 0);
 }
