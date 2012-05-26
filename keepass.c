@@ -159,7 +159,8 @@ rb_kp_db_groups(VALUE self)
         kpass_group *group = kdb->groups[i];
         VALUE rb_group     = rb_funcall(cGroup, rb_intern("new"), 0);
 
-        rb_ivar_set(rb_group, rb_intern("@id"), INT2FIX(group->id));
+        rb_ivar_set(rb_group, rb_intern("@kdb"), self);
+        rb_ivar_set(rb_group, rb_intern("@id"), INT2NUM(group->id));
         rb_ivar_set(rb_group, rb_intern("@name"), rb_str_new_cstr(group->name));
         _set_time(rb_group, "@mtime", group->mtime);
         _set_time(rb_group, "@ctime", group->ctime);
