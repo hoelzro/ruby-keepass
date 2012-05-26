@@ -184,6 +184,11 @@ prefix##_##attr_name(VALUE self)\
     return rb_ivar_get(self, rb_intern("@" #attr_name));\
 }
 
+gen_reader(rb_kp_grp, mtime);
+gen_reader(rb_kp_grp, ctime);
+gen_reader(rb_kp_grp, atime);
+gen_reader(rb_kp_grp, etime);
+
 static VALUE
 __define_exception(VALUE module, kpass_retval value,
     const char *value_as_str)
@@ -257,5 +262,9 @@ Init_keepass(void)
     rb_define_method(cDatabase, "groups", rb_kp_db_groups, 0);
 
     /* Group Methods */
-    rb_define_method(cGroup, "name", rb_kp_grp_name, 0);
+    rb_define_method(cGroup, "name",  rb_kp_grp_name, 0);
+    rb_define_method(cGroup, "mtime", rb_kp_grp_mtime, 0);
+    rb_define_method(cGroup, "ctime", rb_kp_grp_ctime, 0);
+    rb_define_method(cGroup, "atime", rb_kp_grp_atime, 0);
+    rb_define_method(cGroup, "etime", rb_kp_grp_etime, 0);
 }
