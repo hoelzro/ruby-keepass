@@ -4,6 +4,7 @@ require 'keepass'
 KP_FILE            = 'test/example.kdb'
 CORRECT_PASSWORD   = 'abc123'
 INCORRECT_PASSWORD = '123abc'
+OPEN_METHODS       = [ :open, :new ]
 
 class TestKeepass_Open < MiniTest::Unit::TestCase
     def assert_no_exception
@@ -27,30 +28,38 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
     end
 
     def test_open_string_ok
-        assert_no_exception do
-            kdb = Keepass::Database.open(KP_FILE, CORRECT_PASSWORD)
+        OPEN_METHODS.each do |method|
+            assert_no_exception do
+                kdb = Keepass::Database.send method, KP_FILE, CORRECT_PASSWORD
+            end
         end
     end
 
     def test_open_file_ok
-        f = File.open(KP_FILE, 'rb')
+        OPEN_METHODS.each do |method|
+            f = File.open(KP_FILE, 'rb')
 
-        assert_no_exception do
-            kdb = Keepass::Database.open(f, CORRECT_PASSWORD)
+            assert_no_exception do
+                kdb = Keepass::Database.send method, f, CORRECT_PASSWORD
+            end
         end
     end
 
     def test_open_string_with_bad_password
-        assert_exception Keepass::DecryptDataFail do
-            kdb = Keepass::Database.open(KP_FILE, INCORRECT_PASSWORD)
+        OPEN_METHODS.each do |method|
+            assert_exception Keepass::DecryptDataFail do
+                kdb = Keepass::Database.send method, KP_FILE, INCORRECT_PASSWORD
+            end
         end
     end
 
     def test_open_file_with_bad_password
-        f = File.open(KP_FILE, 'rb')
+        OPEN_METHODS.each do |method|
+            f = File.open(KP_FILE, 'rb')
 
-        assert_exception Keepass::DecryptDataFail do
-            kdb = Keepass::Database.open(f, INCORRECT_PASSWORD)
+            assert_exception Keepass::DecryptDataFail do
+                kdb = Keepass::Database.send method, f, INCORRECT_PASSWORD
+            end
         end
     end
 end
