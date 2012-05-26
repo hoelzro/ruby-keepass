@@ -214,6 +214,10 @@ rb_kp_grp_entries(VALUE self)
             continue;
         }
 
+        if(! strcmp(entry->title, "Meta-Info")) {
+            continue;
+        }
+
         rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
 
         rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
