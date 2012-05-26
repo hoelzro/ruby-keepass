@@ -173,6 +173,23 @@ rb_kp_db_groups(VALUE self)
     return groups;
 }
 
+static VALUE
+_create_ruby_entry(kpass_entry *entry)
+{
+    VALUE rb_entry;
+
+    rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
+
+    rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
+    rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+    _set_time(rb_entry, "@mtime", entry->mtime);
+    _set_time(rb_entry, "@ctime", entry->ctime);
+    _set_time(rb_entry, "@atime", entry->atime);
+    _set_time(rb_entry, "@etime", entry->etime);
+
+    return rb_entry;
+}
+
 VALUE
 rb_kp_db_entries(VALUE self)
 {
@@ -187,20 +204,14 @@ rb_kp_db_entries(VALUE self)
     entries = rb_ary_new();
 
     for(i = 0; i < kdb->entries_len; i++) {
-        kpass_entry *entry = kdb->entries[i];
         VALUE rb_entry;
+        kpass_entry *entry = kdb->entries[i];
 
         if(! strcmp(entry->title, "Meta-Info")) {
             continue;
         }
-        rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
 
-        rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
-        rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
-        _set_time(rb_entry, "@mtime", entry->mtime);
-        _set_time(rb_entry, "@ctime", entry->ctime);
-        _set_time(rb_entry, "@atime", entry->atime);
-        _set_time(rb_entry, "@etime", entry->etime);
+        rb_entry = _create_ruby_entry(entry);
 
         rb_ary_push(entries, rb_entry);
     }
@@ -257,10 +268,7 @@ rb_kp_grp_entries(VALUE self)
             continue;
         }
 
-        rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
-
-        rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
-        rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+        rb_entry = _create_ruby_entry(entry);
 
         rb_ary_push(entries, rb_entry);
     }
