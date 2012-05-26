@@ -5,7 +5,7 @@ KP_FILE            = 'test/example.kdb'
 CORRECT_PASSWORD   = 'abc123'
 
 class TestKeepass_Groups < MiniTest::Unit::TestCase
-    def test_groups
+    def test_group_names
         kdb         = Keepass::Database.open KP_FILE, CORRECT_PASSWORD
         seen_groups = []
 
