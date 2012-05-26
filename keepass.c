@@ -173,6 +173,41 @@ rb_kp_db_groups(VALUE self)
     return groups;
 }
 
+VALUE
+rb_kp_db_entries(VALUE self)
+{
+    VALUE kdb_object;
+    kpass_db *kdb = NULL;
+    VALUE entries;
+    uint32_t i;
+
+    kdb_object = rb_ivar_get(self, rb_intern("@kdb"));
+    Data_Get_Struct(kdb_object, kpass_db, kdb);
+
+    entries = rb_ary_new();
+
+    for(i = 0; i < kdb->entries_len; i++) {
+        kpass_entry *entry = kdb->entries[i];
+        VALUE rb_entry;
+
+        if(! strcmp(entry->title, "Meta-Info")) {
+            continue;
+        }
+        rb_entry = rb_funcall(cEntry, rb_intern("new"), 0);
+
+        rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
+        rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+        _set_time(rb_entry, "@mtime", entry->mtime);
+        _set_time(rb_entry, "@ctime", entry->ctime);
+        _set_time(rb_entry, "@atime", entry->atime);
+        _set_time(rb_entry, "@etime", entry->etime);
+
+        rb_ary_push(entries, rb_entry);
+    }
+
+    return entries;
+}
+
 #define gen_reader(prefix, attr_name)\
 VALUE \
 prefix##_##attr_name(VALUE self)\
@@ -300,6 +335,7 @@ Init_keepass(void)
     rb_define_singleton_method(cDatabase, "open", rb_kp_db_open, 2);
     rb_define_method(cDatabase, "initialize", rb_kp_db_initialize, 2);
     rb_define_method(cDatabase, "groups", rb_kp_db_groups, 0);
+    rb_define_method(cDatabase, "entries", rb_kp_db_entries, 0);
 
     /* Group Methods */
     rb_define_method(cGroup, "name",  rb_kp_grp_name, 0);
