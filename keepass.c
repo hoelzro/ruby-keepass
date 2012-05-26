@@ -186,6 +186,9 @@ gen_reader(rb_kp_grp, ctime);
 gen_reader(rb_kp_grp, atime);
 gen_reader(rb_kp_grp, etime);
 
+gen_reader(rb_kp_entry, name);
+gen_reader(rb_kp_entry, password);
+
 VALUE
 rb_kp_grp_entries(VALUE self)
 {
@@ -301,4 +304,8 @@ Init_keepass(void)
     rb_define_method(cGroup, "atime", rb_kp_grp_atime, 0);
     rb_define_method(cGroup, "etime", rb_kp_grp_etime, 0);
     rb_define_method(cGroup, "entries", rb_kp_grp_entries, 0);
+
+    /* Entry Methods */
+    rb_define_method(cEntry, "name", rb_kp_entry_name, 0);
+    rb_define_method(cEntry, "password", rb_kp_entry_password, 0);
 }
