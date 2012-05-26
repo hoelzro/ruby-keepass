@@ -131,12 +131,12 @@ _set_time(VALUE object, const char *attr_name, uint8_t value[5])
 
     kpass_unpack_time(value, &time_value);
     rb_time = rb_funcall(rb_cTime, rb_intern("gm"), 6,
-        INT2FIX(time_value.tm_year + 1900),
-        INT2FIX(time_value.tm_mon  + 1),
-        INT2FIX(time_value.tm_mday),
-        INT2FIX(time_value.tm_hour),
-        INT2FIX(time_value.tm_min),
-        INT2FIX(time_value.tm_sec)
+        INT2NUM(time_value.tm_year + 1900),
+        INT2NUM(time_value.tm_mon  + 1),
+        INT2NUM(time_value.tm_mday),
+        INT2NUM(time_value.tm_hour),
+        INT2NUM(time_value.tm_min),
+        INT2NUM(time_value.tm_sec)
     );
 
     rb_ivar_set(object, rb_intern(attr_name), rb_time);
