@@ -61,7 +61,7 @@ static void raise_kp_exception(kpass_retval result)
 }
 
 VALUE
-rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
+rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
 {
     ID id_read;
     VALUE bytes;
@@ -108,7 +108,19 @@ rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
         raise_kp_exception(result);
     }
 
-    return kdb_object;
+    rb_ivar_set(self, rb_intern("@kdb"), kdb_object);
+
+    return Qnil;
+}
+
+VALUE
+rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
+{
+    ID id_new;
+
+    id_new = rb_intern("new");
+
+    return rb_funcall(klass, id_new, 2, rb_file, rb_password);
 }
 
 static VALUE
@@ -180,4 +192,5 @@ Init_keepass(void)
 
     /* Database Methods */
     rb_define_singleton_method(cDatabase, "open", rb_kp_db_open, 2);
+    rb_define_method(cDatabase, "initialize", rb_kp_db_initialize, 2);
 }
