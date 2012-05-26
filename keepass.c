@@ -123,6 +123,25 @@ rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
     return rb_funcall(klass, id_new, 2, rb_file, rb_password);
 }
 
+static void
+_set_time(VALUE object, const char *attr_name, uint8_t value[5])
+{
+    struct tm time_value;
+    VALUE rb_time;
+
+    kpass_unpack_time(value, &time_value);
+    rb_time = rb_funcall(rb_cTime, rb_intern("gm"), 6,
+        INT2FIX(time_value.tm_year + 1900),
+        INT2FIX(time_value.tm_mon  + 1),
+        INT2FIX(time_value.tm_mday),
+        INT2FIX(time_value.tm_hour),
+        INT2FIX(time_value.tm_min),
+        INT2FIX(time_value.tm_sec)
+    );
+
+    rb_ivar_set(object, rb_intern(attr_name), rb_time);
+}
+
 VALUE
 rb_kp_db_groups(VALUE self)
 {
@@ -141,6 +160,10 @@ rb_kp_db_groups(VALUE self)
         VALUE rb_group     = rb_funcall(cGroup, rb_intern("new"), 0);
 
         rb_ivar_set(rb_group, rb_intern("@name"), rb_str_new_cstr(group->name));
+        _set_time(rb_group, "@mtime", group->mtime);
+        _set_time(rb_group, "@ctime", group->ctime);
+        _set_time(rb_group, "@atime", group->atime);
+        _set_time(rb_group, "@etime", group->etime);
 
         rb_ary_push(groups, rb_group);
     }
