@@ -171,12 +171,6 @@ rb_kp_db_groups(VALUE self)
     return groups;
 }
 
-VALUE
-rb_kp_grp_name(VALUE self)
-{
-    return rb_ivar_get(self, rb_intern("@name"));
-}
-
 #define gen_reader(prefix, attr_name)\
 VALUE \
 prefix##_##attr_name(VALUE self)\
@@ -184,6 +178,7 @@ prefix##_##attr_name(VALUE self)\
     return rb_ivar_get(self, rb_intern("@" #attr_name));\
 }
 
+gen_reader(rb_kp_grp, name);
 gen_reader(rb_kp_grp, mtime);
 gen_reader(rb_kp_grp, ctime);
 gen_reader(rb_kp_grp, atime);
