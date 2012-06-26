@@ -316,7 +316,7 @@ define_exception_classes(VALUE module)
     eException_##value = __define_exception(module, value, #value)
 
     eException_KeepassException = rb_define_class_under(module, "Exception",
-        rb_eException);
+        rb_eStandardError);
 
     eException_unknown = rb_define_class_under(module, "UnknownException",
         eException_KeepassException);
