@@ -302,6 +302,7 @@ __define_exception(VALUE module, kpass_retval value,
         memmove(p, p + 1, copy_end - p); /* delete '_' character */
         *p = toupper(*p); /* upper-case character following '_' */
         p  = strchr(copy, '_');
+        copy_end--;
     }
     klass = rb_define_class_under(module, copy, eException_KeepassException);
     free(copy);
