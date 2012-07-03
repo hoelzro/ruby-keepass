@@ -2,14 +2,39 @@
 #include <ruby.h>
 #include <kpass.h>
 
-#define MODULE_NAME "Keepass"
-#define DATABASE_CLASS_NAME "Database"
-#define GROUP_CLASS_NAME "Group"
-#define ENTRY_CLASS_NAME "Entry"
-
+/*
+ * Document-module: Keepass
+ *
+ * A module containing classes related to processing
+ * a Keepass database.
+ *
+ */
 static VALUE mKeepass;
+
+/*
+ * Document-class: Keepass::Database
+ *
+ * A class representing a Keepass database.
+ *
+ */
 static VALUE cDatabase;
+
+/*
+ * Document-class: Keepass::Group
+ *
+ * A class representing a group of entries in a Keepass
+ * database.
+ *
+ */
 static VALUE cGroup;
+
+/*
+ * Document-class: Keepass::Entry
+ *
+ * A class representing an entry in a Keepass
+ * database.
+ *
+ */
 static VALUE cEntry;
 
 static VALUE eException_KeepassException;
@@ -349,11 +374,11 @@ void
 Init_keepass(void)
 {
     /* Module Initialization */
-    mKeepass  = rb_define_module(MODULE_NAME);
-    cDatabase = rb_define_class_under(mKeepass, DATABASE_CLASS_NAME,
+    mKeepass  = rb_define_module("Keepass");
+    cDatabase = rb_define_class_under(mKeepass, "Database",
         rb_cObject);
-    cGroup = rb_define_class_under(mKeepass, GROUP_CLASS_NAME, rb_cObject);
-    cEntry = rb_define_class_under(mKeepass, ENTRY_CLASS_NAME, rb_cObject);
+    cGroup = rb_define_class_under(mKeepass, "Group", rb_cObject);
+    cEntry = rb_define_class_under(mKeepass, "Entry", rb_cObject);
 
     define_exception_classes(mKeepass);
 
