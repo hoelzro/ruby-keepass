@@ -292,8 +292,9 @@ __define_exception(VALUE module, kpass_retval value,
     char *p;
     VALUE klass;
 
-    copy = strdup(value_as_str + strlen("kpass_")); /* copy and remove
-                                                     * prefix */
+    copy = malloc(strlen(value_as_str) - strlen("kpass_") + sizeof("Exception"));
+    strcpy(copy, value_as_str + strlen("kpass_")); /* copy and remove
+                                                    * prefix */
     copy_end = copy + strlen(copy);
     copy[0]  = toupper(copy[0]); /* upper-case first character */
 
@@ -303,6 +304,11 @@ __define_exception(VALUE module, kpass_retval value,
         *p = toupper(*p); /* upper-case character following '_' */
         p  = strchr(copy, '_');
         copy_end--;
+    }
+    if(!strcmp(copy_end - 4, "Fail")) {
+        strcpy(copy_end - 4, "Exception");
+    } else {
+        strcat(copy_end - 1, "Exception");
     }
     klass = rb_define_class_under(module, copy, eException_KeepassException);
     free(copy);
