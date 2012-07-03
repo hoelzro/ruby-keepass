@@ -47,7 +47,7 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
 
     def test_open_string_with_bad_password
         OPEN_METHODS.each do |method|
-            assert_exception Keepass::DecryptDataFail do
+            assert_exception Keepass::DecryptDataException do
                 kdb = Keepass::Database.send method, KP_FILE, INCORRECT_PASSWORD
             end
         end
@@ -57,7 +57,7 @@ class TestKeepass_Open < MiniTest::Unit::TestCase
         OPEN_METHODS.each do |method|
             f = File.open(KP_FILE, 'rb')
 
-            assert_exception Keepass::DecryptDataFail do
+            assert_exception Keepass::DecryptDataException do
                 kdb = Keepass::Database.send method, f, INCORRECT_PASSWORD
             end
         end
