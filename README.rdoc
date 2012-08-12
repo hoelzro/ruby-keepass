@@ -1,0 +1,3 @@
+= keepass
+
+This is a Ruby binding to libkpass.
