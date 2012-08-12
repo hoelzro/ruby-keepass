@@ -37,20 +37,125 @@ static VALUE cGroup;
  */
 static VALUE cEntry;
 
+/*
+ * Document-class: Keepass::Exception
+ *
+ * An exception type for exceptions that occur when accessing a Keepass
+ * database.
+ *
+ */
 static VALUE eException_KeepassException;
+
+/*
+ * Document-class: Keepass::UnknownException
+ *
+ * An exception type for unknown errors.
+ *
+ */
 static VALUE eException_unknown;
+
+/*
+ * Document-class: Keepass::DecryptDataException
+ *
+ * An exception type for when data decryption fails.
+ *
+ */
 static VALUE eException_kpass_decrypt_data_fail;
+
+/*
+ * Document-class: Keepass::DecryptDbException
+ *
+ * An exception type for when data decryption fails.
+ *
+ */
 static VALUE eException_kpass_decrypt_db_fail;
+
+/*
+ * Document-class: Keepass::HashPwException
+ *
+ * An exception type for when password hashing fails.
+ *
+ */
 static VALUE eException_kpass_hash_pw_fail;
+
+/*
+ * Document-class: Keepass::PrepareKeyException
+ *
+ * An exception type for when key preparation fails.
+ *
+ */
 static VALUE eException_kpass_prepare_key_fail;
+
+/*
+ * Document-class: Keepass::LoadDecryptedDataEntryException
+ *
+ * An exception type for when loading an entry fails.
+ *
+ */
 static VALUE eException_kpass_load_decrypted_data_entry_fail;
+
+/*
+ * Document-class: Keepass::LoadDecryptedDataGroupException
+ *
+ * An exception type for when loading a groupo fails.
+ *
+ */
 static VALUE eException_kpass_load_decrypted_data_group_fail;
+
+/*
+ * Document-class: Keepass::InitDbException
+ *
+ * An exception type for when initializing a database fails.
+ *
+ */
 static VALUE eException_kpass_init_db_fail;
+
+/*
+ * Document-class: Keepass::EncryptDbException
+ *
+ * An exception type for when encrypting a database fails.
+ *
+ */
 static VALUE eException_kpass_encrypt_db_fail;
+
+/*
+ * Document-class: Keepass::EncryptDataException
+ *
+ * An exception type for when encrypting a database fails.
+ *
+ */
 static VALUE eException_kpass_encrypt_data_fail;
+
+/*
+ * Document-class: Keepass::PackDbException
+ *
+ * An exception type for when packing a database fails.
+ *
+ */
 static VALUE eException_kpass_pack_db_fail;
+
+/*
+ * Document-class: Keepass::VerificationException
+ *
+ * An exception type for when verifying a database fails.
+ *
+ */
 static VALUE eException_kpass_verification_fail;
+
+/*
+ * Document-class: Keepass::UnsupportedFlagException
+ *
+ * An exception type for when an unsupported flag is used.
+ *
+ */
 static VALUE eException_kpass_unsupported_flag;
+
+/*
+ * Document-class: Keepass::NotImplementedException
+ *
+ * An exception type for when unimplemented functionality is used.
+ *
+ */
 static VALUE eException_kpass_not_implemented;
 
 static void raise_kp_exception(kpass_retval result)
