@@ -352,7 +352,7 @@ _create_ruby_entry(kpass_entry *entry)
 }
 
 /*
- * Document-method: entries
+ * Document-method: Keepass::Database#entries
  *
  * Returns an Array of entries in this database.
  *
@@ -519,7 +519,7 @@ rb_kp_entry_etime(VALUE self)
 }
 
 /*
- * Document-method: entries
+ * Document-method: Keepass::Group#entries
  *
  * Returns the entries contained within this group.
  *
