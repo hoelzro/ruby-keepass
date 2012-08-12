@@ -190,6 +190,12 @@ static void raise_kp_exception(kpass_retval result)
 #undef throw_exception
 }
 
+/*
+ * Document-method: initialize
+ *
+ * Opens up a Keepass database with the given filename and password.
+ *
+ */
 VALUE
 rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
 {
@@ -243,6 +249,12 @@ rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
     return Qnil;
 }
 
+/*
+ * Document-method: open
+ *
+ * Opens up a Keepass database with the given filename and password.
+ *
+ */
 VALUE
 rb_kp_db_open(VALUE klass, VALUE rb_file, VALUE rb_password)
 {
@@ -288,6 +300,12 @@ _create_ruby_group(VALUE kdb, kpass_group *group)
     return rb_group;
 }
 
+/*
+ * Document-method: groups
+ *
+ * Returns an Array of groups in this database.
+ *
+ */
 VALUE
 rb_kp_db_groups(VALUE self)
 {
@@ -327,6 +345,12 @@ _create_ruby_entry(kpass_entry *entry)
     return rb_entry;
 }
 
+/*
+ * Document-method: entries
+ *
+ * Returns an Array of entries in this database.
+ *
+ */
 VALUE
 rb_kp_db_entries(VALUE self)
 {
@@ -356,72 +380,144 @@ rb_kp_db_entries(VALUE self)
     return entries;
 }
 
+/*
+ * Document-method: name
+ *
+ * Returns the name of this group.
+ *
+ */
 VALUE
 rb_kp_grp_name(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@name"));
 }
 
+/*
+ * Document-method: mtime
+ *
+ * Returns the modification time of this group.
+ *
+ */
 VALUE
 rb_kp_grp_mtime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@mtime"));
 }
 
+/*
+ * Document-method: ctime
+ *
+ * Returns the creation time of this group.
+ *
+ */
 VALUE
 rb_kp_grp_ctime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@ctime"));
 }
 
+/*
+ * Document-method: atime
+ *
+ * Returns the last access time of this group.
+ *
+ */
 VALUE
 rb_kp_grp_atime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@atime"));
 }
 
+/*
+ * Document-method: etime
+ *
+ * Returns the expire time of this group.
+ *
+ */
 VALUE
 rb_kp_grp_etime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@etime"));
 }
 
+/*
+ * Document-method: name
+ *
+ * Returns the name of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_name(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@name"));
 }
 
+/*
+ * Document-method: password
+ *
+ * Returns the password of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_password(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@password"));
 }
 
+/*
+ * Document-method: mtime
+ *
+ * Returns the modification time of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_mtime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@mtime"));
 }
 
+/*
+ * Document-method: ctime
+ *
+ * Returns the creation time of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_ctime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@ctime"));
 }
 
+/*
+ * Document-method: atime
+ *
+ * Returns the last access time of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_atime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@atime"));
 }
 
+/*
+ * Document-method: etime
+ *
+ * Returns the expire time of this entry.
+ *
+ */
 VALUE
 rb_kp_entry_etime(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@etime"));
 }
 
+/*
+ * Document-method: entries
+ *
+ * Returns the entries contained within this group.
+ *
+ */
 VALUE
 rb_kp_grp_entries(VALUE self)
 {
