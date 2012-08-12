@@ -195,6 +195,9 @@ static void raise_kp_exception(kpass_retval result)
  *
  * Opens up a Keepass database with the given filename and password.
  *
+ * call-seq:
+ *   Keepass::Database.new(filename, password)
+ *
  */
 VALUE
 rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
@@ -253,6 +256,9 @@ rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
  * Document-method: open
  *
  * Opens up a Keepass database with the given filename and password.
+ *
+ * call-seq:
+ *   Keepass::Database.open(filename, password)
  *
  */
 VALUE
