@@ -251,25 +251,71 @@ rb_kp_db_entries(VALUE self)
     return entries;
 }
 
-#define gen_reader(prefix, attr_name)\
-VALUE \
-prefix##_##attr_name(VALUE self)\
-{\
-    return rb_ivar_get(self, rb_intern("@" #attr_name));\
+VALUE
+rb_kp_grp_name(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@name"));
 }
 
-gen_reader(rb_kp_grp, name);
-gen_reader(rb_kp_grp, mtime);
-gen_reader(rb_kp_grp, ctime);
-gen_reader(rb_kp_grp, atime);
-gen_reader(rb_kp_grp, etime);
+VALUE
+rb_kp_grp_mtime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@mtime"));
+}
 
-gen_reader(rb_kp_entry, name);
-gen_reader(rb_kp_entry, password);
-gen_reader(rb_kp_entry, mtime);
-gen_reader(rb_kp_entry, ctime);
-gen_reader(rb_kp_entry, atime);
-gen_reader(rb_kp_entry, etime);
+VALUE
+rb_kp_grp_ctime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@ctime"));
+}
+
+VALUE
+rb_kp_grp_atime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@atime"));
+}
+
+VALUE
+rb_kp_grp_etime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@etime"));
+}
+
+VALUE
+rb_kp_entry_name(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@name"));
+}
+
+VALUE
+rb_kp_entry_password(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@password"));
+}
+
+VALUE
+rb_kp_entry_mtime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@mtime"));
+}
+
+VALUE
+rb_kp_entry_ctime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@ctime"));
+}
+
+VALUE
+rb_kp_entry_atime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@atime"));
+}
+
+VALUE
+rb_kp_entry_etime(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@etime"));
+}
 
 VALUE
 rb_kp_grp_entries(VALUE self)
