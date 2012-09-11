@@ -2,4 +2,6 @@ Makefile
 mkmf.log
 *.o
 *.so
+*.bundle
+*.gem
 /doc/
