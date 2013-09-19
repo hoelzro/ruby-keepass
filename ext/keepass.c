@@ -103,12 +103,20 @@ static VALUE eException_kpass_load_decrypted_data_entry_fail;
 static VALUE eException_kpass_load_decrypted_data_group_fail;
 
 /*
- * Document-class: Keepass::InitDbException
+ * Document-class: Keepass::InitDBShort
  *
- * An exception type for when initializing a database fails.
+ * An exception type for when initializing a db fails.
  *
  */
-static VALUE eException_kpass_init_db_fail;
+static VALUE eException_kpass_init_db_short;
+
+/*
+ * Document-class: Keepass::VerificationException
+ *
+ * An exception type for when verifying a database fails.
+ *
+ */
+static VALUE eException_kpass_init_db_signature;
 
 /*
  * Document-class: Keepass::EncryptDbException
@@ -134,13 +142,6 @@ static VALUE eException_kpass_encrypt_data_fail;
  */
 static VALUE eException_kpass_pack_db_fail;
 
-/*
- * Document-class: Keepass::VerificationException
- *
- * An exception type for when verifying a database fails.
- *
- */
-static VALUE eException_kpass_verification_fail;
 
 /*
  * Document-class: Keepass::UnsupportedFlagException
@@ -162,7 +163,7 @@ static void raise_kp_exception(kpass_retval result)
 {
 #define throw_exception(type)\
     case type:\
-        rb_raise(eException_##type, kpass_error_str[type]);\
+        rb_raise(eException_##type, kpass_strerror(type));\
         break;
 
     /* it's ok, so don't do anything */
@@ -170,19 +171,13 @@ static void raise_kp_exception(kpass_retval result)
         return;
     }
     switch(result) {
-        throw_exception(kpass_decrypt_data_fail);
-        throw_exception(kpass_decrypt_db_fail);
-        throw_exception(kpass_hash_pw_fail);
-        throw_exception(kpass_prepare_key_fail);
-        throw_exception(kpass_load_decrypted_data_entry_fail);
-        throw_exception(kpass_load_decrypted_data_group_fail);
-        throw_exception(kpass_init_db_fail);
-        throw_exception(kpass_encrypt_db_fail);
-        throw_exception(kpass_encrypt_data_fail);
-        throw_exception(kpass_pack_db_fail);
-        throw_exception(kpass_verification_fail);
-        throw_exception(kpass_unsupported_flag);
-        throw_exception(kpass_not_implemented);
+		throw_exception(kpass_decrypt_data_fail);
+		throw_exception(kpass_load_decrypted_data_entry_fail);
+		throw_exception(kpass_load_decrypted_data_group_fail);
+		throw_exception(kpass_init_db_short);
+		throw_exception(kpass_init_db_signature);
+		throw_exception(kpass_pack_db_fail);
+		throw_exception(kpass_unsupported_flag);
 
         default:
             rb_raise(eException_unknown, "An unknown error occurred");
@@ -235,11 +230,13 @@ rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
         raise_kp_exception(result);
     }
 
-    result = kpass_hash_pw(kdb, RSTRING_PTR(rb_password), hashed_pass);
+	kpass_hash_pw(RSTRING_PTR(rb_password), hashed_pass);
+
+    /*result = kpass_hash_pw(kdb, RSTRING_PTR(rb_password), hashed_pass);
 
     if(result != kpass_success) {
         raise_kp_exception(result);
-    }
+    }*/
 
     result = kpass_decrypt_db(kdb, hashed_pass);
 
@@ -579,11 +576,11 @@ Init_keepass(void)
     eException_kpass_prepare_key_fail               = rb_define_class_under(mKeepass, "PrepareKeyException", eException_KeepassException);
     eException_kpass_load_decrypted_data_entry_fail = rb_define_class_under(mKeepass, "LoadDecryptedDataEntryException", eException_KeepassException);
     eException_kpass_load_decrypted_data_group_fail = rb_define_class_under(mKeepass, "LoadDecryptedDataGroupException", eException_KeepassException);
-    eException_kpass_init_db_fail                   = rb_define_class_under(mKeepass, "InitDbException", eException_KeepassException);
+    eException_kpass_init_db_short                  = rb_define_class_under(mKeepass, "InitDbException", eException_KeepassException);
     eException_kpass_encrypt_db_fail                = rb_define_class_under(mKeepass, "EncryptDbException", eException_KeepassException);
     eException_kpass_encrypt_data_fail              = rb_define_class_under(mKeepass, "EncryptDataException", eException_KeepassException);
     eException_kpass_pack_db_fail                   = rb_define_class_under(mKeepass, "PackDbException", eException_KeepassException);
-    eException_kpass_verification_fail              = rb_define_class_under(mKeepass, "VerificationException", eException_KeepassException);
+    eException_kpass_init_db_signature              = rb_define_class_under(mKeepass, "VerificationException", eException_KeepassException);
     eException_kpass_unsupported_flag               = rb_define_class_under(mKeepass, "UnsupportedFlagException", eException_KeepassException);
     eException_kpass_not_implemented                = rb_define_class_under(mKeepass, "NotImplementedException", eException_KeepassException);
 
