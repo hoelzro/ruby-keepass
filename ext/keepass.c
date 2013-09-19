@@ -300,6 +300,13 @@ _create_ruby_entry(kpass_entry *entry)
 
     rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
     rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+	rb_ivar_set(rb_entry, rb_intern("@username"), rb_str_new_cstr(entry->username));
+	rb_ivar_set(rb_entry, rb_intern("@url"), rb_str_new_cstr(entry->url));
+	rb_ivar_set(rb_entry, rb_intern("@title"), rb_str_new_cstr(entry->title));
+	rb_ivar_set(rb_entry, rb_intern("@uuid"), rb_int_new_int(entry->uuid));
+	rb_ivar_set(rb_entry, rb_intern("@guid"), rb_int_new_int(entry->group_id));
+	rb_ivar_set(rb_entry, rb_intern("@notes"), rb_str_new_cstr(entry->notes));
+	rb_ivar_set(rb_entry, rb_intern("@description"), rb_str_new_cstr(entry->desc));
     _set_time(rb_entry, "@mtime", entry->mtime);
     _set_time(rb_entry, "@ctime", entry->ctime);
     _set_time(rb_entry, "@atime", entry->atime);
@@ -404,6 +411,30 @@ rb_kp_grp_etime(VALUE self)
 }
 
 /*
+ * Document-method: uuid
+ *
+ * Returns the uniqe ID of this entry
+ *
+ */
+VALUE
+rb_kp_entry_uuid(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@uuid"));
+}
+
+/*
+ * Document-method: guid
+ *
+ * Returns the group ID of this entry
+ *
+ */
+VALUE
+rb_kp_entry_guid(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@guid"));
+}
+
+/*
  * Document-method: name
  *
  * Returns the name of this entry.
@@ -416,6 +447,42 @@ rb_kp_entry_name(VALUE self)
 }
 
 /*
+ * Document-method: url
+ *
+ * Returns the url of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_url(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@url"));
+}
+
+/*
+ * Document-method: title
+ *
+ * Returns the title of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_title(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@title"));
+}
+
+/*
+ * Document-method: username
+ *
+ * Returns the username of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_username(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@username"));
+}
+
+/*
  * Document-method: password
  *
  * Returns the password of this entry.
@@ -425,6 +492,30 @@ VALUE
 rb_kp_entry_password(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@password"));
+}
+
+/*
+ * Document-method: notes
+ *
+ * Returns the notes of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_notes(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@notes"));
+}
+
+/*
+ * Document-method: description
+ *
+ * Returns the description of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_description(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@description"));
 }
 
 /*
@@ -560,4 +651,11 @@ Init_keepass(void)
     rb_define_method(cEntry, "ctime", rb_kp_entry_ctime, 0);
     rb_define_method(cEntry, "atime", rb_kp_entry_atime, 0);
     rb_define_method(cEntry, "etime", rb_kp_entry_etime, 0);
+	rb_define_method(cEntry, "title", rb_kp_entry_title, 0);
+	rb_define_method(cEntry, "url", rb_kp_entry_url, 0);
+	rb_define_method(cEntry, "username", rb_kp_entry_username, 0);
+	rb_define_method(cEntry, "uuid", rb_kp_entry_uuid, 0);
+	rb_define_method(cEntry, "guid", rb_kp_entry_guid, 0);
+	rb_define_method(cEntry, "notes", rb_kp_entry_notes, 0);
+	rb_define_method(cEntry, "description", rb_kp_entry_description, 0);
 }
