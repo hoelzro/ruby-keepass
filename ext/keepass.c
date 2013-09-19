@@ -303,8 +303,8 @@ _create_ruby_entry(kpass_entry *entry)
 	rb_ivar_set(rb_entry, rb_intern("@username"), rb_str_new_cstr(entry->username));
 	rb_ivar_set(rb_entry, rb_intern("@url"), rb_str_new_cstr(entry->url));
 	rb_ivar_set(rb_entry, rb_intern("@title"), rb_str_new_cstr(entry->title));
-	rb_ivar_set(rb_entry, rb_intern("@uuid"), rb_int_new_int(entry->uuid));
-	rb_ivar_set(rb_entry, rb_intern("@guid"), rb_int_new_int(entry->group_id));
+	rb_ivar_set(rb_entry, rb_intern("@uuid"), INT2NUM(entry->uuid));
+	rb_ivar_set(rb_entry, rb_intern("@guid"), INT2NUM(entry->group_id));
 	rb_ivar_set(rb_entry, rb_intern("@notes"), rb_str_new_cstr(entry->notes));
 	rb_ivar_set(rb_entry, rb_intern("@description"), rb_str_new_cstr(entry->desc));
     _set_time(rb_entry, "@mtime", entry->mtime);
