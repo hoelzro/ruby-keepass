@@ -63,30 +63,6 @@ static VALUE eException_unknown;
 static VALUE eException_kpass_decrypt_data_fail;
 
 /*
- * Document-class: Keepass::DecryptDbException
- *
- * An exception type for when data decryption fails.
- *
- */
-static VALUE eException_kpass_decrypt_db_fail;
-
-/*
- * Document-class: Keepass::HashPwException
- *
- * An exception type for when password hashing fails.
- *
- */
-static VALUE eException_kpass_hash_pw_fail;
-
-/*
- * Document-class: Keepass::PrepareKeyException
- *
- * An exception type for when key preparation fails.
- *
- */
-static VALUE eException_kpass_prepare_key_fail;
-
-/*
  * Document-class: Keepass::LoadDecryptedDataEntryException
  *
  * An exception type for when loading an entry fails.
@@ -103,28 +79,20 @@ static VALUE eException_kpass_load_decrypted_data_entry_fail;
 static VALUE eException_kpass_load_decrypted_data_group_fail;
 
 /*
- * Document-class: Keepass::InitDbException
+ * Document-class: Keepass::InitDBShort
  *
- * An exception type for when initializing a database fails.
+ * An exception type for when initializing a db fails.
  *
  */
-static VALUE eException_kpass_init_db_fail;
+static VALUE eException_kpass_init_db_short;
 
 /*
- * Document-class: Keepass::EncryptDbException
+ * Document-class: Keepass::VerificationException
  *
- * An exception type for when encrypting a database fails.
- *
- */
-static VALUE eException_kpass_encrypt_db_fail;
-
-/*
- * Document-class: Keepass::EncryptDataException
- *
- * An exception type for when encrypting a database fails.
+ * An exception type for when verifying a database fails.
  *
  */
-static VALUE eException_kpass_encrypt_data_fail;
+static VALUE eException_kpass_init_db_signature;
 
 /*
  * Document-class: Keepass::PackDbException
@@ -134,13 +102,6 @@ static VALUE eException_kpass_encrypt_data_fail;
  */
 static VALUE eException_kpass_pack_db_fail;
 
-/*
- * Document-class: Keepass::VerificationException
- *
- * An exception type for when verifying a database fails.
- *
- */
-static VALUE eException_kpass_verification_fail;
 
 /*
  * Document-class: Keepass::UnsupportedFlagException
@@ -162,7 +123,7 @@ static void raise_kp_exception(kpass_retval result)
 {
 #define throw_exception(type)\
     case type:\
-        rb_raise(eException_##type, kpass_error_str[type]);\
+        rb_raise(eException_##type, kpass_strerror(type));\
         break;
 
     /* it's ok, so don't do anything */
@@ -170,19 +131,13 @@ static void raise_kp_exception(kpass_retval result)
         return;
     }
     switch(result) {
-        throw_exception(kpass_decrypt_data_fail);
-        throw_exception(kpass_decrypt_db_fail);
-        throw_exception(kpass_hash_pw_fail);
-        throw_exception(kpass_prepare_key_fail);
-        throw_exception(kpass_load_decrypted_data_entry_fail);
-        throw_exception(kpass_load_decrypted_data_group_fail);
-        throw_exception(kpass_init_db_fail);
-        throw_exception(kpass_encrypt_db_fail);
-        throw_exception(kpass_encrypt_data_fail);
-        throw_exception(kpass_pack_db_fail);
-        throw_exception(kpass_verification_fail);
-        throw_exception(kpass_unsupported_flag);
-        throw_exception(kpass_not_implemented);
+		throw_exception(kpass_decrypt_data_fail);
+		throw_exception(kpass_load_decrypted_data_entry_fail);
+		throw_exception(kpass_load_decrypted_data_group_fail);
+		throw_exception(kpass_init_db_short);
+		throw_exception(kpass_init_db_signature);
+		throw_exception(kpass_pack_db_fail);
+		throw_exception(kpass_unsupported_flag);
 
         default:
             rb_raise(eException_unknown, "An unknown error occurred");
@@ -235,11 +190,13 @@ rb_kp_db_initialize(VALUE self, VALUE rb_file, VALUE rb_password)
         raise_kp_exception(result);
     }
 
-    result = kpass_hash_pw(kdb, RSTRING_PTR(rb_password), hashed_pass);
+	kpass_hash_pw(RSTRING_PTR(rb_password), hashed_pass);
+
+    /*result = kpass_hash_pw(kdb, RSTRING_PTR(rb_password), hashed_pass);
 
     if(result != kpass_success) {
         raise_kp_exception(result);
-    }
+    }*/
 
     result = kpass_decrypt_db(kdb, hashed_pass);
 
@@ -343,6 +300,13 @@ _create_ruby_entry(kpass_entry *entry)
 
     rb_ivar_set(rb_entry, rb_intern("@name"), rb_str_new_cstr(entry->title));
     rb_ivar_set(rb_entry, rb_intern("@password"), rb_str_new_cstr(entry->password));
+	rb_ivar_set(rb_entry, rb_intern("@username"), rb_str_new_cstr(entry->username));
+	rb_ivar_set(rb_entry, rb_intern("@url"), rb_str_new_cstr(entry->url));
+	rb_ivar_set(rb_entry, rb_intern("@title"), rb_str_new_cstr(entry->title));
+	rb_ivar_set(rb_entry, rb_intern("@uuid"), INT2NUM(entry->uuid));
+	rb_ivar_set(rb_entry, rb_intern("@guid"), INT2NUM(entry->group_id));
+	rb_ivar_set(rb_entry, rb_intern("@notes"), rb_str_new_cstr(entry->notes));
+	rb_ivar_set(rb_entry, rb_intern("@description"), rb_str_new_cstr(entry->desc));
     _set_time(rb_entry, "@mtime", entry->mtime);
     _set_time(rb_entry, "@ctime", entry->ctime);
     _set_time(rb_entry, "@atime", entry->atime);
@@ -447,6 +411,30 @@ rb_kp_grp_etime(VALUE self)
 }
 
 /*
+ * Document-method: uuid
+ *
+ * Returns the uniqe ID of this entry
+ *
+ */
+VALUE
+rb_kp_entry_uuid(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@uuid"));
+}
+
+/*
+ * Document-method: guid
+ *
+ * Returns the group ID of this entry
+ *
+ */
+VALUE
+rb_kp_entry_guid(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@guid"));
+}
+
+/*
  * Document-method: name
  *
  * Returns the name of this entry.
@@ -459,6 +447,42 @@ rb_kp_entry_name(VALUE self)
 }
 
 /*
+ * Document-method: url
+ *
+ * Returns the url of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_url(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@url"));
+}
+
+/*
+ * Document-method: title
+ *
+ * Returns the title of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_title(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@title"));
+}
+
+/*
+ * Document-method: username
+ *
+ * Returns the username of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_username(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@username"));
+}
+
+/*
  * Document-method: password
  *
  * Returns the password of this entry.
@@ -468,6 +492,30 @@ VALUE
 rb_kp_entry_password(VALUE self)
 {
     return rb_ivar_get(self, rb_intern("@password"));
+}
+
+/*
+ * Document-method: notes
+ *
+ * Returns the notes of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_notes(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@notes"));
+}
+
+/*
+ * Document-method: description
+ *
+ * Returns the description of this entry.
+ *
+ */
+VALUE
+rb_kp_entry_description(VALUE self)
+{
+    return rb_ivar_get(self, rb_intern("@description"));
 }
 
 /*
@@ -574,16 +622,11 @@ Init_keepass(void)
     eException_KeepassException                     = rb_define_class_under(mKeepass, "Exception", rb_eStandardError);
     eException_unknown                              = rb_define_class_under(mKeepass, "UnknownException", eException_KeepassException);
     eException_kpass_decrypt_data_fail              = rb_define_class_under(mKeepass, "DecryptDataException", eException_KeepassException);
-    eException_kpass_decrypt_db_fail                = rb_define_class_under(mKeepass, "DecryptDbException", eException_KeepassException);
-    eException_kpass_hash_pw_fail                   = rb_define_class_under(mKeepass, "HashPwException", eException_KeepassException);
-    eException_kpass_prepare_key_fail               = rb_define_class_under(mKeepass, "PrepareKeyException", eException_KeepassException);
     eException_kpass_load_decrypted_data_entry_fail = rb_define_class_under(mKeepass, "LoadDecryptedDataEntryException", eException_KeepassException);
     eException_kpass_load_decrypted_data_group_fail = rb_define_class_under(mKeepass, "LoadDecryptedDataGroupException", eException_KeepassException);
-    eException_kpass_init_db_fail                   = rb_define_class_under(mKeepass, "InitDbException", eException_KeepassException);
-    eException_kpass_encrypt_db_fail                = rb_define_class_under(mKeepass, "EncryptDbException", eException_KeepassException);
-    eException_kpass_encrypt_data_fail              = rb_define_class_under(mKeepass, "EncryptDataException", eException_KeepassException);
+    eException_kpass_init_db_short                  = rb_define_class_under(mKeepass, "InitDbException", eException_KeepassException);
+	eException_kpass_init_db_signature              = rb_define_class_under(mKeepass, "VerificationException", eException_KeepassException);
     eException_kpass_pack_db_fail                   = rb_define_class_under(mKeepass, "PackDbException", eException_KeepassException);
-    eException_kpass_verification_fail              = rb_define_class_under(mKeepass, "VerificationException", eException_KeepassException);
     eException_kpass_unsupported_flag               = rb_define_class_under(mKeepass, "UnsupportedFlagException", eException_KeepassException);
     eException_kpass_not_implemented                = rb_define_class_under(mKeepass, "NotImplementedException", eException_KeepassException);
 
@@ -608,4 +651,11 @@ Init_keepass(void)
     rb_define_method(cEntry, "ctime", rb_kp_entry_ctime, 0);
     rb_define_method(cEntry, "atime", rb_kp_entry_atime, 0);
     rb_define_method(cEntry, "etime", rb_kp_entry_etime, 0);
+	rb_define_method(cEntry, "title", rb_kp_entry_title, 0);
+	rb_define_method(cEntry, "url", rb_kp_entry_url, 0);
+	rb_define_method(cEntry, "username", rb_kp_entry_username, 0);
+	rb_define_method(cEntry, "uuid", rb_kp_entry_uuid, 0);
+	rb_define_method(cEntry, "guid", rb_kp_entry_guid, 0);
+	rb_define_method(cEntry, "notes", rb_kp_entry_notes, 0);
+	rb_define_method(cEntry, "description", rb_kp_entry_description, 0);
 }
